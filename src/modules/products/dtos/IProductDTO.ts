@@ -1,7 +1,10 @@
+/**
+ * Interface que define a tipagem de um produto
+ */
 export default class IProductDTO {
-    id?: number
-    nome: string
-    preco: number
-    quantidade: number
-    categoria_id?: number
+     id?: number; // id é opcional (no cadastro não precisa, mas na ediçao sim)
+     nome: string;
+     preco: number;
+     quantidade: number;
+     categoria_id?: number;
 }

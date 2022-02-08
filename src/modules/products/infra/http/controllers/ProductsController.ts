@@ -1,52 +1,58 @@
-import { Request, Response } from 'express';
-import FindProductService from '../../../services/FindProductsService';
-import CreateProductService from '../../../services/CreateProductServeice';
-import FindOneProductService from '../../../services/FindOneProductService';
-import DeleteProductService from '../../../services/DeleteProductService';
-import UpdateProductService from '../../../services/UpdateProductService';
+import { Request, Response } from "express";
+import FindProductService from "../../../services/FindProductsService";
+import CreateProductService from "../../../services/CreateProductServeice";
+import FindOneProductService from "../../../services/FindOneProductService";
+import DeleteProductService from "../../../services/DeleteProductService";
+import UpdateProductService from "../../../services/UpdateProductService";
 
+/**
+ * O controller tem acesso as requisições e é o responsável por enviar uma
+ * resposta
+ *
+ * Por padrão ele deve ter no máximo 5 métodos (index, create, show, update e delete)
+ */
 class ProductController {
-  async create(request: Request, response: Response) {
-    const create = new CreateProductService();
+     async create(request: Request, response: Response) {
+          const create = new CreateProductService();
 
-    const product = request.body;
+          const product = request.body;
 
-    return response.json(await create.execute(product));
-  }
+          return response.json(await create.execute(product));
+     }
 
-  async find(request: Request, response: Response) {
-    const find = new FindProductService();
+     async find(request: Request, response: Response) {
+          const find = new FindProductService();
 
-    return response.json(await find.execute());
-  }
+          return response.json(await find.execute());
+     }
 
-  async findOne(request: Request, response: Response) {
-    const findOne = new FindOneProductService();
+     async findOne(request: Request, response: Response) {
+          const findOne = new FindOneProductService();
 
-    const data = request.body;
+          const data = request.body;
 
-    const id = Number(request.body.id);
+          const id = Number(request.body.id);
 
-    return response.json(await findOne.execute(data, id));
-  }
+          return response.json(await findOne.execute(data, id));
+     }
 
-  async delete(request: Request, response: Response) {
-    const deleteService = new DeleteProductService();
+     async delete(request: Request, response: Response) {
+          const deleteService = new DeleteProductService();
 
-    const id = Number(request.body.id);
+          const id = Number(request.body.id);
 
-    return response.json(await deleteService.execute(id));
-  }
+          return response.json(await deleteService.execute(id));
+     }
 
-  async update(request: Request, response: Response) {
-    const update = new UpdateProductService();
+     async update(request: Request, response: Response) {
+          const update = new UpdateProductService();
 
-    const data = request.body;
+          const data = request.body;
 
-    const id = Number(request.body.id);
+          const id = Number(request.body.id);
 
-    return response.json(await update.execute(id, data));
-  }
+          return response.json(await update.execute(id, data));
+     }
 }
 
 export default new ProductController();

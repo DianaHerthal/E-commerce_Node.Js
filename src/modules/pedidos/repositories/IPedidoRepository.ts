@@ -1,10 +1,19 @@
-import IPedidoDTO from '../dtos/IPedidoDTO';
-import Pedido from '../infra/typeorm/entities/Pedido';
+import IPedidoDTO from "../dtos/IPedidoDTO";
+import Pedido from "../infra/typeorm/entities/Pedido";
 
+/**
+ * Interface que define quais serão os métodos do repositório de Pedido
+ * Todos os métodos que o repositório terá devem ser primeiramente definidos aqui
+ */
 export default interface IPedidoRepository {
-  doOrder(data: IPedidoDTO): Promise<Pedido>;
+     /**
+      * data são os dados do Pedido, deve ter o tipo IPedidoDTO
+      * Promise<Pedido> é o tipo do retorno do método
+      */
 
-  clientOrders(id: number): Promise<Pedido[]>;
+     doOrder(data: IPedidoDTO): Promise<Pedido>;
 
-  findOne(id: number): Promise<Pedido | undefined>;
+     clientOrders(id: number): Promise<Pedido[]>;
+
+     findOne(id: number): Promise<Pedido | undefined>;
 }

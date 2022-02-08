@@ -1,64 +1,70 @@
-import IPedidoDTO from '../../../dtos/IPedidoDTO';
-import IPedidoRepository from '../../../repositories/IPedidoRepository';
-import Product from '../../../../products/infra/typeorm/entities/Product';
-import { getRepository, Repository } from 'typeorm';
-import Pedido from '../entities/Pedido';
+import IPedidoDTO from "../../../dtos/IPedidoDTO";
+import IPedidoRepository from "../../../repositories/IPedidoRepository";
+import Product from "../../../../products/infra/typeorm/entities/Product";
+import { getRepository, Repository } from "typeorm";
+import Pedido from "../entities/Pedido";
 
+/**
+ * É nesse arquivo que serão feitas todas as conexões com o banco de dados
+ * Ele implementa a Interface de IClientREpository portanto, sempre
+ * que precisar de um novo método ele deve ser criado na interface também
+ */
 export default class PedidoRepository implements IPedidoRepository {
-    private ormReposotory: Repository<Pedido>;
+     private ormReposotory: Repository<Pedido>;
 
-    constructor() {
-        this.ormReposotory = getRepository(Pedido);
-    }
+     constructor() {
+          this.ormReposotory = getRepository(Pedido);
+     }
 
-    async clientOrders(id: number): Promise<Pedido[]> {
-        const pedidos = await this.ormReposotory.find({
-            where: {
-                cliente_id: id,
-            },
-        });
-        return pedidos;
-    }
+     async clientOrders(id: number): Promise<Pedido[]> {
+          const pedidos = await this.ormReposotory.find({
+               where: {
+                    cliente_id: id,
+               },
+          });
+          return pedidos;
+     }
 
-    async findOne(id: number): Promise<Pedido | undefined> {
-        const pedido = await this.ormReposotory.findOne(id, {
-            relations: ['produtos'],
-        });
+     async findOne(id: number): Promise<Pedido | undefined> {
+          const pedido = await this.ormReposotory.findOne(id, {
+               relations: ["produtos"],
+          });
 
-        return pedido;
-    }
+          return pedido;
+     }
 
-    async doOrder(data: IPedidoDTO): Promise<Pedido> {
-        var valorTotal: number = 0;
+     async doOrder(data: IPedidoDTO): Promise<Pedido> {
+          var valorTotal: number = 0;
 
-        const repositoryProduct = getRepository(Product);
+          const repositoryProduct = getRepository(Product);
 
-        for (let i = 0; i < data.produtos.length; i++) {
-            const produtoCliente = data.produtos[i];
+          for (let i = 0; i < data.produtos.length; i++) {
+               const produtoCliente = data.produtos[i];
 
-            valorTotal += produtoCliente.preco * produtoCliente.quantidade;
+               valorTotal += produtoCliente.preco * produtoCliente.quantidade;
 
-            const produto = await repositoryProduct.findOneOrFail(
-                produtoCliente.id
-            );
+               const produto = await repositoryProduct.findOneOrFail(
+                    produtoCliente.id
+               );
 
-            produto.quantidade = produto.quantidade - produtoCliente.quantidade;
+               produto.quantidade =
+                    produto.quantidade - produtoCliente.quantidade;
 
-            repositoryProduct.save(produto);
-        }
+               repositoryProduct.save(produto);
+          }
 
-        data.valor = valorTotal - data.desconto;
+          data.valor = valorTotal - data.desconto;
 
-        const pedido = this.ormReposotory.create(data);
+          const pedido = this.ormReposotory.create(data);
 
-        return await this.ormReposotory.save(pedido);
-    }
+          return await this.ormReposotory.save(pedido);
+     }
 
-    async verificaEstoque(): Promise<Product[]> {
-        const repositoryProduct = getRepository(Product);
+     async verificaEstoque(): Promise<Product[]> {
+          const repositoryProduct = getRepository(Product);
 
-        const products = await repositoryProduct.find();
+          const products = await repositoryProduct.find();
 
-        return products;
-    }
+          return products;
+     }
 }

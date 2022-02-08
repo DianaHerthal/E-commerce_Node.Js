@@ -1,43 +1,48 @@
-import ICategoryDTO from '../../../dtos/ICategoryDTO';
-import IcategoryRepository from 'modules/categories/repositories/ICategoryRepository';
-import { DeleteResult, getRepository, Repository, UpdateResult } from 'typeorm';
-import Category from '../entities/Category';
+import ICategoryDTO from "../../../dtos/ICategoryDTO";
+import IcategoryRepository from "modules/categories/repositories/ICategoryRepository";
+import { DeleteResult, getRepository, Repository, UpdateResult } from "typeorm";
+import Category from "../entities/Category";
 
+/**
+ * É nesse arquivo que serão feitas todas as conexões com o banco de dados
+ * Ele implementa a Interface de IClientREpository portanto, sempre
+ * que precisar de um novo método ele deve ser criado na interface também
+ */
 export default class CategoryRepository implements IcategoryRepository {
-    private ormRepository: Repository<Category>;
+     private ormRepository: Repository<Category>;
 
-    constructor() {
-        this.ormRepository = getRepository(Category);
-    }
+     constructor() {
+          this.ormRepository = getRepository(Category);
+     }
 
-    async create(data: ICategoryDTO): Promise<Category> {
-        const category = this.ormRepository.create(data);
+     async create(data: ICategoryDTO): Promise<Category> {
+          const category = this.ormRepository.create(data);
 
-        return this.ormRepository.save(category);
-    }
+          return this.ormRepository.save(category);
+     }
 
-    async get(): Promise<Category[]> {
-        const category = await this.ormRepository.find();
+     async get(): Promise<Category[]> {
+          const category = await this.ormRepository.find();
 
-        return category;
-    }
-    async findOne(id: number): Promise<Category | undefined> {
-        //const category = this.ormRepository.findOneOrFail(id);
+          return category;
+     }
+     async findOne(id: number): Promise<Category | undefined> {
+          //const category = this.ormRepository.findOneOrFail(id);
 
-        const category = this.ormRepository.findOne(id, {
-            relations: ['produtos'],
-        });
+          const category = this.ormRepository.findOne(id, {
+               relations: ["produtos"],
+          });
 
-        return category;
-    }
-    async delete(id: number): Promise<DeleteResult> {
-        const result = this.ormRepository.delete(id);
+          return category;
+     }
+     async delete(id: number): Promise<DeleteResult> {
+          const result = this.ormRepository.delete(id);
 
-        return result;
-    }
-    async update(data: ICategoryDTO, id: number): Promise<UpdateResult> {
-        const result = this.ormRepository.update(id, data);
+          return result;
+     }
+     async update(data: ICategoryDTO, id: number): Promise<UpdateResult> {
+          const result = this.ormRepository.update(id, data);
 
-        return result;
-    }
+          return result;
+     }
 }
